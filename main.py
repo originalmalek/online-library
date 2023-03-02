@@ -13,6 +13,7 @@ def download_book(url, book_id):
         file.write(response.content)
 
 def downolad_books(url, start_id: int, end_id: int):
+    os.makedirs('books', exist_ok=True)
     for book_id in range(start_id, end_id + 1):
         download_book(url, book_id)
 
