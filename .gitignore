@@ -91,4 +91,5 @@ media/
 db.sqlite3
 debugapp
 venv
-.idea
+/.idea
+/books/
