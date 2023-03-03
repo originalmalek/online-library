@@ -2,7 +2,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit, urlparse
 from environs import Env
 
 
@@ -32,7 +32,7 @@ def download_book(response, book_name, book_id, books_folder):
 
 
 def download_book_image(book_image_url, books_images_folder, url):
-    image_name = book_image_url.split('/')[-1]
+    image_name = os.path.basename(urlparse(book_image_url).path)
 
     if os.path.exists(f'{books_images_folder}/{image_name}'):
         return False
@@ -57,7 +57,7 @@ def download_book_data(url, book_id, books_folder, books_images_folder):
 
     book_info = get_book_info(book_id)
 
-    download_book(response, book_info['book_name'], book_id, books_folder)
+    # download_book(response, book_info['book_name'], book_id, books_folder)
 
     download_book_image(book_info['book_image_url'], books_images_folder, url)
 
