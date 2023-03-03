@@ -59,7 +59,7 @@ def download_book_data(url, book_id, books_folder, books_images_folder):
 
     # download_book(response, book_info['book_name'], book_id, books_folder)
 
-    download_book_image(book_info['book_image_url'], books_images_folder, url)
+    # download_book_image(book_info['book_image_url'], books_images_folder, url)
 
 
 def download_books(url: str, start_id: int, end_id: int,
