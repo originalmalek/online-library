@@ -69,6 +69,28 @@ def save_books_info_file(books_info_file_name, books_info):
 		json.dump(books_info, fp, ensure_ascii=False)
 
 
+def main(url, end_id, start_id, books_folder,
+	     books_images_folder, books_info_file_name, books_info):
+	for book_id in range(start_id, end_id + 1):
+		book_download_url = urljoin(url, f'txt.php?id={book_id}')
+
+		response = requests.get(book_download_url, allow_redirects=False)
+
+		try:
+			check_for_redirects(response)
+
+			book_info = parse_book_page(book_id)
+
+			download_txt_book(response, book_info['book_name'], book_id, books_folder)
+			download_book_image(book_info['book_image_url'], books_images_folder, url)
+
+			books_info[book_id]=book_info
+
+		except requests.HTTPError:
+			continue
+
+		save_books_info_file(books_info_file_name, books_info)
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации о них с сайта 
 	                                             https://tululu.org/ ''')
@@ -93,22 +115,10 @@ if __name__ == '__main__':
 
 	url = 'https://tululu.org/'
 
-	for book_id in range(start_id, end_id + 1):
-		book_download_url = urljoin(url, f'txt.php?id={book_id}')
-
-		response = requests.get(book_download_url, allow_redirects=False)
-
-		try:
-			check_for_redirects(response)
-
-			book_info = parse_book_page(book_id)
-
-			download_txt_book(response, book_info['book_name'], book_id, books_folder)
-			download_book_image(book_info['book_image_url'], books_images_folder, url)
-
-			books_info[book_id]=book_info
-
-		except requests.HTTPError:
-			continue
-
-		save_books_info_file(books_info_file_name, books_info)
+	main(url,
+	     end_id,
+	     start_id,
+	     books_folder,
+	     books_images_folder,
+	     books_info_file_name,
+	     books_info)
