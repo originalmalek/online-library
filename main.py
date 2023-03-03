@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 from urllib.parse import urljoin
 
@@ -34,11 +35,11 @@ def parse_book_page(book_id):
 	for book_genre in book_genres:
 		genres.append(book_genre.text)
 
-	return {'book_name': book_name,
-	        'book_author': book_author,
-	        'book_image_url': book_image_url,
-	        'book_comments': book_comments,
-	        'book_genres': book_genres}
+	return  {'book_name': book_name,
+	         'book_author': book_author,
+	         'book_image_url': book_image_url,
+	         'book_comments': comments,
+	         'book_genres': genres}
 
 
 def download_txt_book(response, book_name, book_id, books_folder):
@@ -63,6 +64,11 @@ def download_book_image(book_image_url, books_images_folder, url):
 		file.write(response.content)
 
 
+def save_books_info_file(books_info_file_name, books_info):
+	with open(books_info_file_name, 'w') as fp:
+		json.dump(books_info, fp, ensure_ascii=False)
+
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации о них с сайта 
 	                                             https://tululu.org/ ''')
@@ -71,6 +77,7 @@ if __name__ == '__main__':
 	parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
 	args = parser.parse_args()
 
+	books_info = {}
 	start_id = args.start_id
 	end_id = args.end_id
 
@@ -79,6 +86,7 @@ if __name__ == '__main__':
 
 	books_folder = env('BOOKS_FOLDER')
 	books_images_folder = env('BOOKS_IMAGES_FOLDER')
+	books_info_file_name = env('BOOKS_INFO_FILE_NAME')
 
 	os.makedirs(books_folder, exist_ok=True)
 	os.makedirs(books_images_folder, exist_ok=True)
@@ -96,8 +104,11 @@ if __name__ == '__main__':
 			book_info = parse_book_page(book_id)
 
 			download_txt_book(response, book_info['book_name'], book_id, books_folder)
-
 			download_book_image(book_info['book_image_url'], books_images_folder, url)
+
+			books_info[book_id]=book_info
 
 		except requests.HTTPError:
 			continue
+
+		save_books_info_file(books_info_file_name, books_info)
