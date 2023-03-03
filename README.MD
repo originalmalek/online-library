@@ -17,7 +17,7 @@ pip3 install -r requirements.txt
 ```
 BOOKS_FOLDER=папка куда скачаются книги
 BOOKS_IMAGES_FOLDER=папка куда скачаются картинки
-BOOKS_INFO_FILE_NAME=json файл куда запишеться информация о книгах(автор, коментарии и т.д.)
+BOOKS_INFO_FILE_NAME=json файл куда запишется информация о книгах(автор, коментарии и т.д.)
 ```
 ### Для старта
 
