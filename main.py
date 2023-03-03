@@ -1,3 +1,4 @@
+import argparse
 import os
 from urllib.parse import urljoin
 
@@ -63,6 +64,16 @@ def download_book_image(book_image_url, books_images_folder, url):
 
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации о них с сайта 
+	                                             https://tululu.org/ ''')
+
+	parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
+	parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
+	args = parser.parse_args()
+
+	start_id = args.start_id
+	end_id = args.end_id
+
 	env = Env()
 	env.read_env()
 
@@ -73,9 +84,6 @@ if __name__ == '__main__':
 	os.makedirs(books_images_folder, exist_ok=True)
 
 	url = 'https://tululu.org/'
-
-	start_id = 1
-	end_id = 10
 
 	for book_id in range(start_id, end_id + 1):
 		book_download_url = urljoin(url, f'txt.php?id={book_id}')
