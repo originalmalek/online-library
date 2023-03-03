@@ -2,7 +2,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
-from urllib.parse import urljoin, urlsplit, urlparse
+from urllib.parse import urljoin
 from environs import Env
 
 
@@ -12,16 +12,31 @@ def check_for_redirects(response):
 
 
 def get_book_info(book_id):
+    comments = []
+    genres = []
     response = requests.get(f'https://tululu.org/b{book_id}/')
+    # response = requests.get(f'https://tululu.org/b10/')
+    response.raise_for_status()
     soup = BeautifulSoup(response.text, 'lxml')
 
     book_name = sanitize_filename(soup.find('h1').text.split('::')[0].strip())
     book_author = sanitize_filename(soup.find('h1').text.split('::')[1].strip())
     book_image_url = soup.find('div', class_='bookimage').find('img')['src']
+    book_comments = soup.find_all('div', class_='texts')
+    book_genres = soup.find('span', class_='d_book').find_all('a')
 
+    for book_comment in book_comments:
+        comments.append(book_comment.find('span').text)
+
+    for book_genre in book_genres:
+        genres.append(book_genre.text)
+    print(book_name)
+    print(genres)
     return {'book_name': book_name,
             'book_author': book_author,
-            'book_image_url': book_image_url}
+            'book_image_url': book_image_url,
+            'book_comments': book_comments,
+            'book_genres': book_genres}
 
 
 def download_book(response, book_name, book_id, books_folder):
@@ -32,8 +47,8 @@ def download_book(response, book_name, book_id, books_folder):
 
 
 def download_book_image(book_image_url, books_images_folder, url):
-    image_name = os.path.basename(urlparse(book_image_url).path)
-
+    image_name = os.path.basename(book_image_url)
+    print(image_name)
     if os.path.exists(f'{books_images_folder}/{image_name}'):
         return False
 
