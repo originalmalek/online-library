@@ -14,13 +14,8 @@ def check_for_redirects(response):
 		raise requests.HTTPError
 
 
-def parse_book_page(book_id):
-
-
-	response = requests.get(f'https://tululu.org/b{book_id}/')
-	response.raise_for_status()
-
-	soup = BeautifulSoup(response.text, 'lxml')
+def parse_book_page(response_page):
+	soup = BeautifulSoup(response_page.text, 'lxml')
 
 	book_name = sanitize_filename(soup.find('h1').text.split('::')[0].strip())
 	book_author = sanitize_filename(soup.find('h1').text.split('::')[1].strip())
@@ -93,15 +88,17 @@ def main():
 		payload = {'id': book_id}
 		book_download_url = urljoin(url, 'txt.php')
 
-		response = requests.get(book_download_url, params=payload)
+		response_book = requests.get(book_download_url, params=payload)
 
 		try:
-			check_for_redirects(response)
+			check_for_redirects(response_book)
 
-			book = parse_book_page(book_id)
-
-			download_txt_book(response, book['book_name'], book_id, books_folder)
+			download_txt_book(response_book, book['book_name'], book_id, books_folder)
 			download_book_image(book['book_image_url'], books_images_folder, url)
+
+			response_page = requests.get(f'https://tululu.org/b{book_id}/')
+			response_page.raise_for_status()
+			book = parse_book_page(book_id)
 
 			books[book_id] = book
 
