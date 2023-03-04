@@ -1,6 +1,6 @@
 # Парсер книг с сайта tululu.org
 
-Скачиваем книги из категории фантастика с сайта [tululu.org](https://tululu.org/l55/)
+Скачиваем книги с сайта [tululu.org](https://tululu.org/l55/)
 
 ### Как установить
 
@@ -17,7 +17,7 @@ pip3 install -r requirements.txt
 ```
 BOOKS_FOLDER=папка куда скачаются книги
 BOOKS_IMAGES_FOLDER=папка куда скачаются картинки
-BOOKS_INFO_FILE_NAME=json файл куда запишеться информация о книгах(автор, коментарии и т.д.)
+BOOKS_INFO_FILE_NAME=json файл куда запишется информация о книгах(автор, коментарии и т.д.)
 ```
 ### Для старта
 
