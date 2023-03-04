@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from time import sleep
 from urllib.parse import urljoin
 
 import requests
@@ -17,7 +18,7 @@ def check_for_redirects(response):
 def parse_book_page(response_page):
 	soup = BeautifulSoup(response_page.text, 'lxml')
 
-	book_name , book_author = soup.find('h1').text.split('::')
+	book_name, book_author = soup.find('h1').text.split('::')
 	book_name = sanitize_filename(book_name.strip())
 	book_author = sanitize_filename(book_author.strip())
 	book_image_url = soup.find('div', class_='bookimage').find('img')['src']
@@ -46,6 +47,7 @@ def check_image_exists(books_images_folder, image_name):
 		return True
 	return False
 
+
 def download_book_image(book_image_url, books_images_folder, url):
 	image_name = os.path.basename(book_image_url)
 
@@ -65,8 +67,8 @@ def save_books_file(books_file_name, books):
 
 
 def main():
-	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации о них с сайта 
-		                                             https://tululu.org/ ''')
+	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации 
+													о них с сайта https://tululu.org/''')
 
 	parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
 	parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
@@ -96,19 +98,23 @@ def main():
 		response_book.raise_for_status()
 		try:
 			check_for_redirects(response_book)
-			response_page = requests.get(f'https://tululu.org/b{book_id}/')
+			book_url = f'https://tululu.org/b{book_id}/'
+			response_page = requests.get(book_url)
 			response_page.raise_for_status()
 
 			check_for_redirects(response_page)
 			book = parse_book_page(response_page)
 			download_txt_book(response_book, book['book_name'], book_id, books_folder)
-			download_book_image(book['book_image_url'], books_images_folder, url)
+			download_book_image(book['book_image_url'], books_images_folder, book_url)
 
 			books[book_id] = book
 
-		except requests.exceptions.HTTPError:
-			print('Книги с таким id или описания к книге не существует')
+		except requests.exceptions.ConnectionError:
+			print('Ошибка соединения, следующая попытка через 60 секунд')
+			sleep(15)
 
+		except requests.HTTPError:
+			print(f'Книги с id {book_id} или описания к ней не существует')
 		save_books_file(books_file_name, books)
 
 
