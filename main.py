@@ -17,8 +17,9 @@ def check_for_redirects(response):
 def parse_book_page(response_page):
 	soup = BeautifulSoup(response_page.text, 'lxml')
 
-	book_name = sanitize_filename(soup.find('h1').text.split('::')[0].strip())
-	book_author = sanitize_filename(soup.find('h1').text.split('::')[1].strip())
+	book_name , book_author = soup.find('h1').text.split('::')
+	book_name = sanitize_filename(book_name.strip())
+	book_author = sanitize_filename(book_author.strip())
 	book_image_url = soup.find('div', class_='bookimage').find('img')['src']
 	book_comments = soup.find_all('div', class_='texts')
 	book_genres = soup.find('span', class_='d_book').find_all('a')
@@ -40,19 +41,22 @@ def download_txt_book(response, book_name, book_id, books_folder):
 		file.write(response.content)
 
 
+def check_image_exists(books_images_folder, image_name):
+	if os.path.exists(f'{books_images_folder}/{image_name}'):
+		return True
+	return False
+
 def download_book_image(book_image_url, books_images_folder, url):
 	image_name = os.path.basename(book_image_url)
 
-	if os.path.exists(f'{books_images_folder}/{image_name}'):
-		return False
+	if not check_image_exists(books_images_folder, image_name):
+		full_image_url = urljoin(url, book_image_url)
 
-	full_image_url = urljoin(url, book_image_url)
+		response = requests.get(full_image_url)
+		response.raise_for_status()
 
-	response = requests.get(full_image_url)
-	response.raise_for_status()
-
-	with open(os.path.join(books_images_folder, image_name), 'wb') as file:
-		file.write(response.content)
+		with open(os.path.join(books_images_folder, image_name), 'wb') as file:
+			file.write(response.content)
 
 
 def save_books_file(books_file_name, books):
@@ -89,21 +93,21 @@ def main():
 		book_download_url = urljoin(url, 'txt.php')
 
 		response_book = requests.get(book_download_url, params=payload)
-
+		response_book.raise_for_status()
 		try:
 			check_for_redirects(response_book)
+			response_page = requests.get(f'https://tululu.org/b{book_id}/')
+			response_page.raise_for_status()
 
+			check_for_redirects(response_page)
+			book = parse_book_page(response_page)
 			download_txt_book(response_book, book['book_name'], book_id, books_folder)
 			download_book_image(book['book_image_url'], books_images_folder, url)
 
-			response_page = requests.get(f'https://tululu.org/b{book_id}/')
-			response_page.raise_for_status()
-			book = parse_book_page(book_id)
-
 			books[book_id] = book
 
-		except requests.exceptions.HTTPError as err:
-			print('Книги с таким id не существует')
+		except requests.exceptions.HTTPError:
+			print('Книги с таким id или описания к книге не существует')
 
 		save_books_file(books_file_name, books)
 
