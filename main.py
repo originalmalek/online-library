@@ -67,7 +67,7 @@ def save_books_file(books_file_name, books):
 
 
 def main():
-	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации 
+	parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
 													о них с сайта https://tululu.org/''')
 
 	parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
@@ -111,7 +111,7 @@ def main():
 
 		except requests.exceptions.ConnectionError:
 			print('Ошибка соединения, следующая попытка через 60 секунд')
-			sleep(15)
+			sleep(60)
 
 		except requests.HTTPError:
 			print(f'Книги с id {book_id} или описания к ней не существует')
