@@ -114,7 +114,7 @@ def main():
 
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
-            sleep(5)
+            sleep(60)
             main()
 
         except requests.HTTPError:
