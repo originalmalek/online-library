@@ -77,7 +77,7 @@ def main():
     books = {}
     start_id = args.start_id
     end_id = args.end_id
-    print(start_id, end_id)
+
     env = Env()
     env.read_env()
 
