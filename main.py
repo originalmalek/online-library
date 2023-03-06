@@ -94,7 +94,7 @@ def main():
         payload = {'id': book_id}
         book_download_url = urljoin(url, 'txt.php')
         book_url = urljoin(url, f'b{book_id}/')
-        print(book_url)
+
         try:
             response_book = requests.get(book_download_url, params=payload)
             response_book.raise_for_status()
