@@ -42,23 +42,16 @@ def download_txt_book(response, book_name, book_id, books_folder):
         file.write(response.content)
 
 
-def check_image_exists(books_images_folder, image_name):
-    if os.path.exists(f'{books_images_folder}/{image_name}'):
-        return True
-    return False
-
-
 def download_book_image(book_image_url, books_images_folder, url):
     image_name = os.path.basename(book_image_url)
 
-    if not check_image_exists(books_images_folder, image_name):
-        full_image_url = urljoin(url, book_image_url)
+    full_image_url = urljoin(url, book_image_url)
 
-        response = requests.get(full_image_url)
-        response.raise_for_status()
+    response = requests.get(full_image_url)
+    response.raise_for_status()
 
-        with open(os.path.join(books_images_folder, image_name), 'wb') as file:
-            file.write(response.content)
+    with open(os.path.join(books_images_folder, image_name), 'wb') as file:
+        file.write(response.content)
 
 
 def save_books_file(books_file_name, books):
@@ -66,18 +59,7 @@ def save_books_file(books_file_name, books):
         json.dump(books, fp, ensure_ascii=False)
 
 
-def main():
-    parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
-													о них с сайта https://tululu.org/''')
-
-    parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
-    parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
-    args = parser.parse_args()
-
-    books = {}
-    start_id = args.start_id
-    end_id = args.end_id
-
+def main(start_id, end_id):
     env = Env()
     env.read_env()
 
@@ -115,7 +97,7 @@ def main():
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
             sleep(60)
-            main()
+            main(book_id, end_id)
 
         except requests.HTTPError:
             print(f'Книги с id {book_id} или описания к ней не существует')
@@ -123,4 +105,14 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
+    													о них с сайта https://tululu.org/''')
+
+    parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
+    parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
+    args = parser.parse_args()
+
+    books = {}
+    start_id = args.start_id
+    end_id = args.end_id
+    main(start_id, end_id)
