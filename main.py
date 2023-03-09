@@ -78,10 +78,10 @@ def main(start_id, end_id):
         book_url = urljoin(url, f'b{book_id}/')
 
         try:
-            response_book = requests.get(book_download_url, params=payload, timeout=5)
+            response_book = requests.get(book_download_url, params=payload)
             response_book.raise_for_status()
 
-            response_page = requests.get(book_url, timeout=5)
+            response_page = requests.get(book_url)
             response_page.raise_for_status()
 
             check_for_redirects(response_book)
@@ -96,7 +96,7 @@ def main(start_id, end_id):
 
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
-            sleep(60)
+            sleep(5)
             main(book_id, end_id)
 
         except requests.HTTPError:
