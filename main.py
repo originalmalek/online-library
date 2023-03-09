@@ -84,6 +84,7 @@ def main():
     url = 'https://tululu.org/'
 
     while book_id <= end_id:
+        print(book_id)
         payload = {'id': book_id}
         book_download_url = urljoin(url, 'txt.php')
         book_url = urljoin(url, f'b{book_id}/')
@@ -104,7 +105,6 @@ def main():
             download_book_image(book['book_image_url'], books_images_folder, book_url)
 
             books[book_id] = book
-            book_id += 1
 
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
@@ -113,9 +113,10 @@ def main():
 
         except requests.HTTPError:
             print(f'Книги с id {book_id} или описания к ней не существует')
-            book_id += 1
 
-        save_books_file(books_file_name, books)
+        book_id += 1
+
+    save_books_file(books_file_name, books)
 
 
 if __name__ == '__main__':
