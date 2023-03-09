@@ -59,7 +59,18 @@ def save_books_file(books_file_name, books):
         json.dump(books, fp, ensure_ascii=False)
 
 
-def main(start_id, end_id):
+def main():
+    parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
+													о них с сайта https://tululu.org/''')
+
+    parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
+    parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
+    args = parser.parse_args()
+
+    books = {}
+    book_id = args.start_id
+    end_id = args.end_id
+
     env = Env()
     env.read_env()
 
@@ -72,7 +83,7 @@ def main(start_id, end_id):
 
     url = 'https://tululu.org/'
 
-    for book_id in range(start_id, end_id + 1):
+    while book_id <= end_id:
         payload = {'id': book_id}
         book_download_url = urljoin(url, 'txt.php')
         book_url = urljoin(url, f'b{book_id}/')
@@ -93,26 +104,19 @@ def main(start_id, end_id):
             download_book_image(book['book_image_url'], books_images_folder, book_url)
 
             books[book_id] = book
+            book_id += 1
 
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
-            sleep(5)
-            main(book_id, end_id)
+            sleep(60)
+            continue
 
         except requests.HTTPError:
             print(f'Книги с id {book_id} или описания к ней не существует')
+            book_id += 1
+
         save_books_file(books_file_name, books)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
-    													о них с сайта https://tululu.org/''')
-
-    parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
-    parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
-    args = parser.parse_args()
-
-    books = {}
-    start_id = args.start_id
-    end_id = args.end_id
-    main(start_id, end_id)
+    main()
