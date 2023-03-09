@@ -84,7 +84,6 @@ def main():
     url = 'https://tululu.org/'
 
     while book_id <= end_id:
-        print(book_id)
         payload = {'id': book_id}
         book_download_url = urljoin(url, 'txt.php')
         book_url = urljoin(url, f'b{book_id}/')
