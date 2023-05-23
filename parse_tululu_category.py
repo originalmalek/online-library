@@ -16,14 +16,18 @@ def check_for_redirects(response):
 def parse_book_page(response_page):
     soup = BeautifulSoup(response_page.text, 'lxml')
 
-    book_name, book_author = soup.find('h1').text.split('::')
+    book_name, book_author = soup.select_one('h1').text.split('::')
     book_name = sanitize_filename(book_name.strip())
     book_author = sanitize_filename(book_author.strip())
-    book_image_url = soup.find('div', class_='bookimage').find('img')['src']
-    book_comments = soup.find_all('div', class_='texts')
-    book_genres = soup.find('span', class_='d_book').find_all('a')
+    book_image_url_selector = 'div.bookimage img'
+    book_comments_selector = 'div.texts span.black'
+    book_genres_selector = 'span.d_book a'
 
-    comments = [book_comment.find('span').text for book_comment in book_comments]
+    book_image_url = soup.select_one(book_image_url_selector)['src']
+    book_comments = soup.select(book_comments_selector)
+    book_genres = soup.select(book_genres_selector)
+
+    comments = [book_comment.text for book_comment in book_comments]
     genres = [book_genre.text for book_genre in book_genres]
 
     return {'book_name': book_name,
@@ -56,7 +60,6 @@ def save_books_file(books_file_name, books):
     with open(books_file_name, 'w') as fp:
         json.dump(books, fp, ensure_ascii=False)
 
-
 def main():
     url = 'https://tululu.org/'
     category_id = 'l55'
@@ -75,15 +78,17 @@ def main():
     os.makedirs(books_folder, exist_ok=True)
     os.makedirs(books_images_folder, exist_ok=True)
 
-    while category_page < 3:
+    while category_page < 2:
 
         response = requests.get(f'{category_url}/{category_page}')
 
         soup = BeautifulSoup(response.text, 'lxml')
-        on_page_books = soup.find('div', {'id': 'content'}).find_all('table', class_='d_book')
+
+        on_page_books_selector = 'div#content table.d_book'
+        on_page_books = soup.select(on_page_books_selector)
 
         for book in on_page_books:
-            book_id = re.search('\d+', book.find('a')['href'])[0]
+            book_id = re.search('\d+', book.select_one('a')['href'])[0]
             payload = {'id': book_id}
             book_download_url = urljoin(url, 'txt.php')
             book_url = urljoin(url, f'b{book_id}/')
