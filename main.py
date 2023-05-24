@@ -18,14 +18,18 @@ def check_for_redirects(response):
 def parse_book_page(response_page):
     soup = BeautifulSoup(response_page.text, 'lxml')
 
-    book_name, book_author = soup.find('h1').text.split('::')
+    book_name, book_author = soup.select_one('h1').text.split('::')
     book_name = sanitize_filename(book_name.strip())
     book_author = sanitize_filename(book_author.strip())
-    book_image_url = soup.find('div', class_='bookimage').find('img')['src']
-    book_comments = soup.find_all('div', class_='texts')
-    book_genres = soup.find('span', class_='d_book').find_all('a')
+    book_image_url_selector = 'div.bookimage img'
+    book_comments_selector = 'div.texts span.black'
+    book_genres_selector = 'span.d_book a'
 
-    comments = [book_comment.find('span').text for book_comment in book_comments]
+    book_image_url = soup.select_one(book_image_url_selector)['src']
+    book_comments = soup.select(book_comments_selector)
+    book_genres = soup.select(book_genres_selector)
+
+    comments = [book_comment.text for book_comment in book_comments]
     genres = [book_genre.text for book_genre in book_genres]
 
     return {'book_name': book_name,
