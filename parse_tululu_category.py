@@ -4,8 +4,7 @@ from urllib.parse import urljoin
 import re
 import os
 from environs import Env
-import json
-from pathvalidate import sanitize_filename
+
 from time import sleep
 from main import check_for_redirects, parse_book_page, download_txt_book, download_book_image
 from main import save_books_file
@@ -29,7 +28,7 @@ def main():
     os.makedirs(books_folder, exist_ok=True)
     os.makedirs(books_images_folder, exist_ok=True)
 
-    while category_page < 2:
+    while category_page < 1:
 
         response = requests.get(f'{category_url}/{category_page}')
 
