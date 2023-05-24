@@ -7,58 +7,9 @@ from environs import Env
 import json
 from pathvalidate import sanitize_filename
 from time import sleep
+from main import check_for_redirects, parse_book_page, download_txt_book, download_book_image
+from main import save_books_file
 
-def check_for_redirects(response):
-    if response.history:
-        raise requests.HTTPError
-
-
-def parse_book_page(response_page):
-    soup = BeautifulSoup(response_page.text, 'lxml')
-
-    book_name, book_author = soup.select_one('h1').text.split('::')
-    book_name = sanitize_filename(book_name.strip())
-    book_author = sanitize_filename(book_author.strip())
-    book_image_url_selector = 'div.bookimage img'
-    book_comments_selector = 'div.texts span.black'
-    book_genres_selector = 'span.d_book a'
-
-    book_image_url = soup.select_one(book_image_url_selector)['src']
-    book_comments = soup.select(book_comments_selector)
-    book_genres = soup.select(book_genres_selector)
-
-    comments = [book_comment.text for book_comment in book_comments]
-    genres = [book_genre.text for book_genre in book_genres]
-
-    return {'book_name': book_name,
-            'book_author': book_author,
-            'book_image_url': book_image_url,
-            'book_comments': comments,
-            'book_genres': genres}
-
-
-def download_txt_book(response, book_name, book_id, books_folder):
-    file_name = f'{book_id}. {book_name}.txt'
-
-    with open(os.path.join(books_folder, file_name), 'wb') as file:
-        file.write(response.content)
-
-
-def download_book_image(book_image_url, books_images_folder, url):
-    image_name = os.path.basename(book_image_url)
-
-    full_image_url = urljoin(url, book_image_url)
-
-    response = requests.get(full_image_url)
-    response.raise_for_status()
-
-    with open(os.path.join(books_images_folder, image_name), 'wb') as file:
-        file.write(response.content)
-
-
-def save_books_file(books_file_name, books):
-    with open(books_file_name, 'w') as fp:
-        json.dump(books, fp, ensure_ascii=False)
 
 def main():
     url = 'https://tululu.org/'
