@@ -58,7 +58,6 @@ def main():
     env.read_env()
 
     books_folder = os.path.join(destination_folder, env('BOOKS_FOLDER'))
-    print(books_folder)
     books_images_folder = os.path.join(destination_folder, env('BOOKS_IMAGES_FOLDER'))
     books_file_name = os.path.join(destination_folder, json_name)
     category_id = env('CATEGORY_ID')
@@ -107,7 +106,6 @@ def main():
 
                 if skip_images == 0:
                     download_book_image(book['book_image_url'], books_images_folder, book_url)
-                print(book_id)
                 books[book_id] = book
 
             except requests.ConnectionError:
