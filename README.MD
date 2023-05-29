@@ -24,11 +24,11 @@ CATEGORY_ID=id категории с книгами
 
 ### Скачайте книги:
 ```sh
-python parse.py --start_page 1 --end_page 10
+python parse_tululu_category.py --start_page 1 --end_page 10
 ```
 Можно использовать сокращенную запись:
 ```sh
-python parse.py -s 1 -e 10
+python parse_tululu_category.py -s 1 -e 10
 ```
 Можно не указывать параметры `--start_page` и `--end_page`, по умолчанию будут скачиваться все доступные страницы, что займет _очень_ много времени.
 В случае успешного выполнения скрипт ничего не выводит.
