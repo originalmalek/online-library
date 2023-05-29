@@ -23,7 +23,7 @@ def main():
     parser.add_argument('-e', '--end_page',
                         help='Номер последней cтраницы парсинга',
                         type=int,
-                        default=705)
+                        default=702)
     parser.add_argument('-df', '--dest_folder',
                         help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
                         type=str,
