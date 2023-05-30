@@ -8,8 +8,8 @@ import requests
 from bs4 import BeautifulSoup
 from environs import Env
 
-from main import check_for_redirects, parse_book_page, download_txt_book, download_book_image
-from main import save_books_file
+from parse_tululu_by_id import check_for_redirects, parse_book_page, download_txt_book, download_book_image
+from parse_tululu_by_id import save_books_file
 
 
 def main():
