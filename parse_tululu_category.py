@@ -30,18 +30,15 @@ def main():
                         default='')
     parser.add_argument('-si', '--skip_imgs',
                         help='Не скачивать картинки',
-                        type=int,
-                        default=0)
+                        action='store_true')
     parser.add_argument('-st', '--skip_txt',
                         help='Не скачивать книги',
-                        type=int,
-                        default=0)
+                        action='store_true')
     parser.add_argument('-jn', '--json_name',
                         help='Указать своё имя к *.json файлу с результатами',
                         type=str,
                         default='books.json')
     args = parser.parse_args()
-
 
     start_page = args.start_page
     end_page = args.end_page
@@ -98,13 +95,13 @@ def main():
                 check_for_redirects(response_page)
                 book = parse_book_page(response_page)
 
-                if skip_txt == 0:
+                if not skip_txt:
                     response_book = requests.get(book_download_url, params=payload)
                     response_book.raise_for_status()
                     check_for_redirects(response_book)
                     download_txt_book(response_book, book['book_name'], book_id, books_folder)
 
-                if skip_images == 0:
+                if not skip_images:
                     download_book_image(book['book_image_url'], books_images_folder, book_url)
                 books[book_id] = book
 
@@ -115,8 +112,6 @@ def main():
 
             except requests.HTTPError:
                 print(f'Книги с id {book_id} или описания к ней не существует')
-
-        category_page += 1
 
     save_books_file(books_file_name, books)
 
