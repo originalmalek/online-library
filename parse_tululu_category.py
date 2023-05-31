@@ -93,6 +93,7 @@ def main():
             continue
         except requests.HTTPError:
             print(f'Страницы № {category_page} в категории {category_id} не существует')
+            save_books_file(books_file_name, books)
             sys.exit(1)
 
         soup = BeautifulSoup(response.text, 'lxml')
