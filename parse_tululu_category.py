@@ -13,21 +13,6 @@ from parse_tululu_by_id import parse_book_page, download_txt_book, download_book
 from parse_tululu_by_id import check_for_redirects, save_books_file
 
 
-def get_last_category_page(category_url, category_id):
-    try:
-        response = requests.get(category_url)
-        response.raise_for_status()
-        check_for_redirects(response)
-    except requests.HTTPError:
-        print(f'Категории {category_id} не существует')
-        sys.exit(1)
-
-    soup = BeautifulSoup(response.text, 'lxml')
-    last_page_selector = 'a.npage'
-    last_page = int(soup.select(last_page_selector)[-1].text)
-    return last_page
-
-
 def main():
     parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
     													о них с сайта https://tululu.org/''')
@@ -39,7 +24,7 @@ def main():
     parser.add_argument('-e', '--end_page',
                         help='Номер последней cтраницы парсинга',
                         type=int,
-                        default=None)
+                        default=701)
     parser.add_argument('-df', '--dest_folder',
                         help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
                         type=str,
@@ -78,9 +63,6 @@ def main():
     category_url = urljoin(url, f'{category_id}/')
 
     books = {}
-
-    if end_page == None:
-        end_page = get_last_category_page(category_url, category_id)
 
     while category_page <= end_page:
         try:
