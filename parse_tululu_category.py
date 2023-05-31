@@ -9,11 +9,11 @@ import requests
 from bs4 import BeautifulSoup
 from environs import Env
 
-from parse_tululu_by_id import check_for_redirects, parse_book_page, download_txt_book, download_book_image
-from parse_tululu_by_id import save_books_file
+from parse_tululu_by_id import parse_book_page, download_txt_book, download_book_image
+from parse_tululu_by_id import check_for_redirects, save_books_file
 
 
-def get_last_category_page(category_url):
+def get_last_category_page(category_url, category_id):
     try:
         response = requests.get(category_url)
         response.raise_for_status()
@@ -80,7 +80,7 @@ def main():
     books = {}
 
     if end_page == None:
-        end_page = get_last_category_page(category_url)
+        end_page = get_last_category_page(category_url, category_id)
 
     while category_page <= end_page:
         try:
@@ -92,7 +92,7 @@ def main():
             sleep(5)
             continue
         except requests.HTTPError:
-            print(f'Такой страницы в категории {category_id} не существует')
+            print(f'Страницы № {category_page} в категории {category_id} не существует')
             sys.exit(1)
 
         soup = BeautifulSoup(response.text, 'lxml')
@@ -108,17 +108,17 @@ def main():
             book_url = urljoin(url, f'b{book_id}/')
 
             try:
-                response_page = requests.get(book_url)
-                response_page.raise_for_status()
-                check_for_redirects(response_page)
+                page_response = requests.get(book_url)
+                page_response.raise_for_status()
+                check_for_redirects(page_response)
 
-                book = parse_book_page(response_page)
+                book = parse_book_page(page_response)
 
                 if not skip_txt:
-                    response_book = requests.get(book_download_url, params=payload)
-                    response_book.raise_for_status()
-                    check_for_redirects(response_book)
-                    download_txt_book(response_book, book['book_name'], book_id, books_folder)
+                    book_response = requests.get(book_download_url, params=payload)
+                    book_response.raise_for_status()
+                    check_for_redirects(book_response)
+                    download_txt_book(book_response, book['book_name'], book_id, books_folder)
 
                 if not skip_images:
                     download_book_image(book['book_image_url'], books_images_folder, book_url)
