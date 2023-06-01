@@ -24,8 +24,8 @@ def parse_book_page(response_page):
     book_image_url_selector = 'div.bookimage img'
     book_comments_selector = 'div.texts span.black'
     book_genres_selector = 'span.d_book a'
-
     book_image_url = soup.select_one(book_image_url_selector)['src']
+    book_image_name = os.path.basename(book_image_url)
     book_comments = soup.select(book_comments_selector)
     book_genres = soup.select(book_genres_selector)
 
@@ -33,6 +33,7 @@ def parse_book_page(response_page):
     genres = [book_genre.text for book_genre in book_genres]
 
     return {'book_name': book_name,
+            'book_image_name': book_image_name,
             'book_author': book_author,
             'book_image_url': book_image_url,
             'book_comments': comments,
@@ -67,8 +68,8 @@ def main():
     parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
 													о них с сайта https://tululu.org/''')
 
-    parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int)
-    parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int)
+    parser.add_argument('-s', '--start_id', help='Номер первой книги парсинга', type=int, default=1)
+    parser.add_argument('-e', '--end_id', help='Номер последней книги парсинга', type=int, default=10)
     args = parser.parse_args()
 
     books = {}
