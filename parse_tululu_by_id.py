@@ -15,8 +15,8 @@ def check_for_redirects(response):
         raise requests.HTTPError
 
 
-def parse_book_page(response_page):
-    soup = BeautifulSoup(response_page.text, 'lxml')
+def parse_book_page(page_response):
+    soup = BeautifulSoup(page_response.text, 'lxml')
 
     book_name, book_author = soup.select_one('h1').text.split('::')
     book_name = sanitize_filename(book_name.strip())
@@ -46,6 +46,7 @@ def download_txt_book(response, book_name, book_id, books_folder):
     with open(os.path.join(books_folder, file_name), 'wb') as file:
         file.write(response.content)
 
+    return file_name
 
 def download_book_image(book_image_url, books_images_folder, url):
     image_name = os.path.basename(book_image_url)
@@ -94,21 +95,24 @@ def main():
         book_url = urljoin(url, f'b{book_id}/')
 
         try:
-            response_book = requests.get(book_download_url, params=payload)
-            response_book.raise_for_status()
+            book_response = requests.get(book_download_url, params=payload)
+            book_response.raise_for_status()
 
-            response_page = requests.get(book_url)
-            response_page.raise_for_status()
+            page_response = requests.get(book_url)
+            page_response.raise_for_status()
 
-            check_for_redirects(response_book)
-            check_for_redirects(response_page)
+            check_for_redirects(book_response)
+            check_for_redirects(page_response)
 
-            book = parse_book_page(response_page)
+            book = parse_book_page(page_response)
 
-            download_txt_book(response_book, book['book_name'], book_id, books_folder)
-            download_book_image(book['book_image_url'], books_images_folder, book_url)
+            download_txt_book(book_response, book['book_name'], book_id, books_folder)
+            book_name = download_txt_book(book_response,
+                                                book['book_name'],
+                                                book_id, books_folder)
 
             books[book_id] = book
+            books[book_id]['book_name'] = book_name
 
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
