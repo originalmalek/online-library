@@ -71,7 +71,7 @@ def main():
             check_for_redirects(response)
         except requests.ConnectionError:
             print('Ошибка соединения, следующая попытка через 60 секунд')
-            sleep(5)
+            sleep(60)
             continue
         except requests.HTTPError:
             print(f'Страницы № {category_page} в категории {category_id} не существует')
