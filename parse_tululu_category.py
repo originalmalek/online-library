@@ -20,7 +20,7 @@ def main():
     parser.add_argument('-s', '--start_page',
                         help='Номер первой cтраницы парсинга',
                         type=int,
-                        default=1)
+                        default=698)
     parser.add_argument('-e', '--end_page',
                         help='Номер последней cтраницы парсинга',
                         type=int,
@@ -89,7 +89,7 @@ def main():
             payload = {'id': book_id}
             book_download_url = urljoin(url, 'txt.php')
             book_url = urljoin(url, f'b{book_id}/')
-
+            book_file_name = ""
             try:
                 page_response = requests.get(book_url)
                 page_response.raise_for_status()
@@ -101,11 +101,15 @@ def main():
                     book_response = requests.get(book_download_url, params=payload)
                     book_response.raise_for_status()
                     check_for_redirects(book_response)
-                    download_txt_book(book_response, book['book_name'], book_id, books_folder)
+                    book_file_name = download_txt_book(book_response,
+                                                  book['book_name'],
+                                                  book_id, books_folder)
 
                 if not skip_images:
                     download_book_image(book['book_image_url'], books_images_folder, book_url)
+
                 books[book_id] = book
+                books[book_id]['book_file_name'] = book_file_name
 
             except requests.ConnectionError:
                 print('Ошибка соединения, следующая попытка через 60 секунд')
