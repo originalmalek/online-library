@@ -13,6 +13,7 @@
 </head>
 
 <body>
+<div class="pb-1 pt-3">
 <nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
     {% if page_number != 1%}
@@ -35,6 +36,7 @@
     {% endif %}
   </ul>
 </nav>
+</div>
 {% for first_book, second_book in chunked_books %}
 <div class="container">
   <div class="row">
