@@ -2,15 +2,11 @@ from livereload import Server, shell
 import json
 from environs import Env
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from more_itertools import chunked
+from more_itertools import grouper, chunked
+import os
 
-def render_page(books_file_name, book_image_folder):
-    with open(books_file_name, "r") as my_file:
-        books_json = my_file.read()
 
-    books = json.loads(books_json)
-
-    chunked_books = list(chunked(books, 2))
+def render_page(book_image_folder, books, chunked_books, page_number, site_directory):
     template = env.get_template('template.html')
 
     rendered_page = template.render(
@@ -20,12 +16,24 @@ def render_page(books_file_name, book_image_folder):
 
     )
 
-    with open('index.html', 'w', encoding="utf8") as file:
+    with open(f'{site_directory}/index{page_number}.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
 
 
-def on_reload():
-    render_page(books_file_name, book_image_folder)
+def on_reload(site_directory):
+    render_pages(books_file_name, book_image_folder, site_directory)
+
+
+def render_pages(books_file_name, book_image_folder, site_directory):
+    with open(books_file_name, "r") as my_file:
+        books_json = my_file.read()
+
+    books = json.loads(books_json)
+
+    chunked_books = list(chunked(grouper(books, 2, incomplete='fill', fillvalue='0'), 5))
+    for page_number, books_group in enumerate(chunked_books, start=1):
+        render_page(book_image_folder, books, books_group, page_number, site_directory)
+
 
 
 if __name__ == '__main__':
@@ -33,12 +41,15 @@ if __name__ == '__main__':
     env.read_env()
     books_file_name = env('BOOKS_FILE_NAME')
     book_image_folder = env('BOOKS_IMAGES_FOLDER')
+    site_directory = env('SITE_DIRECTORY')
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
 
-    on_reload()
+    os.makedirs(site_directory, mode=0o777, exist_ok=True)
+
+    on_reload(site_directory)
     server = Server()
     server.watch('template.html', on_reload)
     server.serve(root='.')
