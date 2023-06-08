@@ -17,7 +17,6 @@ def render_page(book_image_folder, books, chunked_books, page_number, site_direc
         page_quantity=page_quantity,
         page_number=page_number,
     )
-    print(page_quantity)
     with open(f'{site_directory}/index{page_number}.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
 
