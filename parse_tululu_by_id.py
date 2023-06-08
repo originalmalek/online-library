@@ -107,8 +107,8 @@ def main():
             book = parse_book_page(page_response)
 
             book_name = download_txt_book(book_response,
-                                                book['book_name'],
-                                                book_id, books_folder)
+                                          book['book_name'],
+                                          book_id, books_folder)
 
             books[book_id] = book
             books[book_id]['book_name'] = book_name
