@@ -20,9 +20,11 @@ pip install -r requirements.txt
 BOOKS_FOLDER=папка куда скачаются книги
 BOOKS_IMAGES_FOLDER=папка куда скачаются картинки
 CATEGORY_ID=id категории с книгами
+BOOKS_FILE_NAME=имя json файла
+SITE_DIRECTORY=имя папки где будет куда будет сгенерирован сайт
 ```
 
-### Скачайте книги:
+### Скачайте книги в туже папку где будет хранится сайт:
 ```sh
 python parse_tululu_category.py --start_page 1 --end_page 10
 ```
@@ -43,6 +45,19 @@ python parse_tululu_category.py -s 1 -e 10
 
 
 В случае успешного выполнения скрипт ничего не выводит.
+
+### Как сгенерировать сайт
+
+Убедитесь, что после парсинга библиотеки у вас появился файл -  `books.json`
+
+Запустите
+```shell script
+python3 render_website.py
+```
+
+И переходите по адресу http://127.0.0.1:5500
+
+Готовый пример вы можете посмотреть [https://originalmalek.github.io/](https://originalmalek.github.io/online-library/pages/index1.html)
 
 ## Цели проекта
 
