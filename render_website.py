@@ -33,8 +33,6 @@ def render_pages(books_file_name, book_image_folder, site_directory):
 
     chunked_books = list(chunked(grouper(books, 2, incomplete='fill', fillvalue='0'), 5))
     page_quantity = len(chunked_books)
-    print()
-    print(page_quantity)
     for page_number, books_group in enumerate(chunked_books, start=1):
         render_page(book_image_folder, books, books_group, page_number, site_directory, page_quantity)
 
