@@ -6,3 +6,5 @@ requests==2.28.2
 livereload==2.6.3
 environs==9.5.0
 more-itertools==9.1.0
+Jinja2==3.1.2
+
