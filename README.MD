@@ -54,8 +54,11 @@ python parse_tululu_category.py -s 1 -e 10
 ```shell script
 python3 render_website.py
 ```
+- `--books_directory` - Путь в каталогу с результатами парсинга. По умолчанию: `/books`
+- `--site_directory` - Каталог куда будет с генерирован сайт. По умолчанию: `site_directory`
+- `--json_name` - Путь к JSON-файлу с результатами. По умолчанию: `books.json`
 
-И переходите по адресу http://127.0.0.1:5500
+И переходите по адресу http://127.0.0.1:5500/index1.html
 
 Готовый пример вы можете посмотреть [https://originalmalek.github.io/](https://originalmalek.github.io/online-library/pages/index1.html)
 
