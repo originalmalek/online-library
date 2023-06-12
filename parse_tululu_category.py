@@ -28,7 +28,7 @@ def parse_arguments():
     parser.add_argument('-df', '--dest_folder',
                         help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
                         type=str,
-                        default='')
+                        default='/books')
     parser.add_argument('-si', '--skip_imgs',
                         help='Не скачивать картинки',
                         action='store_true')
