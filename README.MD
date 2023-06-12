@@ -55,8 +55,8 @@ python parse_tululu_category.py -s 1 -e 10
 python3 render_website.py
 ```
 - `--books_directory` - Путь в каталогу с результатами парсинга. По умолчанию: `/books`
-- `--site_directory` - Каталог куда будет с генерирован сайт. По умолчанию: `site_directory`
-- `--json_name` - Путь к JSON-файлу с результатами. По умолчанию: `books.json`
+- `--site_directory` - Каталог куда будет сгенерирован сайт. По умолчанию: `site_directory`
+- `--json_name` - Имя JSON-файла с данными книг. По умолчанию: `books.json`
 
 И переходите по адресу http://127.0.0.1:5500/index1.html
 
