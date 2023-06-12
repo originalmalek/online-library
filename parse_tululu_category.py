@@ -13,9 +13,9 @@ from parse_tululu_by_id import parse_book_page, download_txt_book, download_book
 from parse_tululu_by_id import check_for_redirects, save_books_file
 
 
-def main():
+def parse_arguments():
     parser = argparse.ArgumentParser(description='''Программа для скачивания книг и информации
-    													о них с сайта https://tululu.org/''')
+        													о них с сайта https://tululu.org/''')
 
     parser.add_argument('-s', '--start_page',
                         help='Номер первой cтраницы парсинга',
@@ -39,7 +39,11 @@ def main():
                         help='Указать своё имя к *.json файлу с результатами',
                         type=str,
                         default='books.json')
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    args = parse_arguments()
 
     category_page = args.start_page
     end_page = args.end_page
