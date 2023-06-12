@@ -56,7 +56,7 @@ def main():
     env.read_env()
 
     books_folder = os.path.join(destination_folder, env('BOOKS_FOLDER'))
-    books_images_folder = os.path.join(destination_folder, env('BOOKS_IMAGES_FOLDER'))
+    books_images_folder = os.path.join(destination_folder, 'images')
     books_file_name = os.path.join(destination_folder, json_name)
     category_id = env('CATEGORY_ID')
 
