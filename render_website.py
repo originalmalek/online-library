@@ -45,11 +45,11 @@ def parse_arguments():
     parser.add_argument('-sd', '--site_directory',
                         help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
                         type=str,
-                        default='site_directory')
+                        default='site')
     parser.add_argument('-bd', '--books_directory',
                         help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
                         type=str,
-                        default='scifi')
+                        default='books')
     parser.add_argument('-jn', '--json_name',
                         help='Указать своё имя к *.json файлу с результатами',
                         type=str,
