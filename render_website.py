@@ -28,7 +28,7 @@ def on_reload():
     with open(books_file, "r") as my_file:
         books = json.load(my_file)
 
-    chunked_books = list(chunked(grouper(books, 2, incomplete='fill', fillvalue='0'), 5))
+    chunked_books = list(chunked(grouper(books, n=2, incomplete='fill', fillvalue='0'), n=5))
     page_quantity = len(chunked_books)
     for page_number, books_group in enumerate(chunked_books, start=1):
         render_page(book_image_folder, books, books_group, page_number, site_directory, page_quantity)
