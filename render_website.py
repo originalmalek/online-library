@@ -23,16 +23,10 @@ def render_page(book_image_folder, books, chunked_books, page_number, site_direc
 
 
 def on_reload():
-    render_pages(books_file_name, book_image_folder, site_directory)
+    books_file = os.path.join(destination_folder, books_file_name)
 
-
-def render_pages(books_file_name, book_image_folder, site_directory):
-    books_file_name = os.path.join(destination_folder, books_file_name)
-
-    with open(books_file_name, "r") as my_file:
-        books_json = my_file.read()
-
-    books = json.loads(books_json)
+    with open(books_file, "r") as my_file:
+        books = json.load(my_file)
 
     chunked_books = list(chunked(grouper(books, 2, incomplete='fill', fillvalue='0'), 5))
     page_quantity = len(chunked_books)
@@ -62,9 +56,11 @@ if __name__ == '__main__':
 
     env = Env()
     env.read_env()
+
     books_file_name = args.json_name
     site_directory = args.site_directory
     destination_folder = args.books_directory
+
     book_image_folder = './images'
     env = Environment(
         loader=FileSystemLoader('.'),
