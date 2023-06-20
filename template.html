@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="resources/bootstrap.min.css">
-  <link rel="icon" type="image/x-icon" href="resources/lg.png">
-  <title>Hola mundo!</title>
+  <link rel="stylesheet" href="../static/bootstrap.min.css">
+  <link rel="icon" type="image/x-icon" href="../static/lg.png">
+  <title>Библиотека</title>
 </head>
 
 <body>
@@ -16,82 +16,64 @@
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
       {% if page_number != 1%}
-        <li class="page-item"><a class="page-link" href="index{{page_number - 1 }}.html">Предыдущая</a></li>
+      <li class="page-item"><a class="page-link" href="index{{page_number - 1 }}.html">Предыдущая</a></li>
       {% else %}
-        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Предыдущая</a>
-        </li>
+      <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Предыдущая</a>
+      </li>
       {% endif %}
-        {% for page_num in range(1, page_quantity + 1) %}
-          {% if page_number == page_num%}
-            <li class="page-item active" aria-current="page"><a class="page-link" href="index{{page_num}}.html">{{ page_num }}<span
-              class="sr-only">(current)</span></a></li>
-          {% else %}
-            <li class="page-item"><a class="page-link" href="index{{page_num}}.html">{{ page_num }}</a></li>
-          {% endif %}
-        {% endfor %}
-      {% if page_number != page_quantity %}
-        <li class="page-item"><a class="page-link" href="index{{page_number + 1 }}.html">Следующая</a></li>
+      {% for page_num in range(1, page_quantity + 1) %}
+      {% if page_number == page_num%}
+      <li class="page-item active" aria-current="page"><a class="page-link" href="index{{page_num}}.html">{{ page_num }}<span
+        class="sr-only">(current)</span></a></li>
       {% else %}
-        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Следующая</a></li>
+      <li class="page-item"><a class="page-link" href="index{{page_num}}.html">{{ page_num }}</a></li>
+      {% endif %}
+      {% endfor %}
+      {% if page_number != page_quantity %}
+      <li class="page-item"><a class="page-link" href="index{{page_number + 1 }}.html">Следующая</a></li>
+      {% else %}
+      <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Следующая</a></li>
       {% endif %}
     </ul>
   </nav>
 </div>
-{% for first_book, second_book in chunked_books %}
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <div class="card mb-3" style="max-width: 540px;">
-          <div class="row no-gutters">
-            <div class="col-md-4">
-              <img src="{{ book_image_folder }}/{{ books[first_book]['book_image_name'] }}" class="card-img"
-                   alt="{{books[first_book]['book_name']}}">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">{{books[first_book]['book_name']}}</h5>
-                <p class="card-text">{{books[first_book]['book_author']}}</p>
-                {% for book_genre in books[first_book]['book_genres']%}
-                <span class="badge badge-light">{{ book_genre }}</span>
-                {% endfor %}
-                <br>
-                <a href="books/{{books[first_book]['book_file_name']}}" target="_blank" rel="noopener noreferrer">Скачать
-                  книгу</a>
-              </div>
+<div class="container">
+  <div class="row">
+    {% for first_book in chunked_books %}
+
+
+    <div class="col">
+      <div class="card mb-3" style="max-width: 540px;">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <img src="{{ book_image_folder }}/{{ books[first_book]['book_image_name'] }}" class="card-img"
+                 alt="{{books[first_book]['book_name']}}">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{books[first_book]['book_name']}}</h5>
+              <p class="card-text">{{books[first_book]['book_author']}}</p>
+              {% for book_genre in books[first_book]['book_genres']%}
+              <span class="badge badge-light">{{ book_genre }}</span>
+              {% endfor %}
+              <br>
+              <a href="books/{{books[first_book]['book_file_name']|urlencode}}" target="_blank"
+                 rel="noopener noreferrer">Скачать
+                книгу</a>
             </div>
           </div>
         </div>
       </div>
-      {% if second_book !='0' %}
-      <div class="col">
-        <div class="card mb-3" style="max-width: 540px;">
-          <div class="row no-gutters">
-            <div class="col-md-4">
-              <img src="{{ book_image_folder }}/{{ books[second_book]['book_image_name'] }}" class="card-img"
-                   alt="{{books[second_book]['book_name']}}">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">{{books[second_book]['book_name']}}</h5>
-                <p class="card-text">{{books[second_book]['book_author']}}</p>
-                {% for book_genre in books[second_book]['book_genres']%}
-                <span class="badge badge-light">{{ book_genre }}</span>
-                {% endfor %}
-                <br>
-                <a href="books/{{books[second_book]['book_file_name']}}" target="_blank" rel="noopener noreferrer">Скачать
-                  книгу</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-      <div class="w-100"></div>
     </div>
+    {% if loop.index is even %}
+    <div class="w-100"></div>
+    {% endif %}
+    {% endfor %}
   </div>
-{% endfor %}
-<script src="resources/jquery-3.5.1.slim.min.js"></script>
-<script src="resources/bootstrap.bundle.min.js"></script>
+</div>
+
+<script src="../static/jquery-3.5.1.slim.min.js"></script>
+<script src="../static/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

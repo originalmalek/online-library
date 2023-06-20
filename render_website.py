@@ -18,17 +18,17 @@ def render_page(book_image_folder, books, chunked_books, page_number, site_direc
         page_quantity=page_quantity,
         page_number=page_number,
     )
-    with open(f'{site_directory}/index{page_number}.html', 'w', encoding="utf8") as file:
+    with open(f'{site_directory}/index{page_number}.html', 'w', encoding='utf8') as file:
         file.write(rendered_page)
 
 
 def on_reload():
     books_file = os.path.join(destination_folder, books_file_name)
 
-    with open(books_file, "r") as my_file:
+    with open(books_file, 'r') as my_file:
         books = json.load(my_file)
 
-    chunked_books = list(chunked(grouper(books, n=2, incomplete='fill', fillvalue='0'), n=5))
+    chunked_books = list(chunked(books, n=10))
     page_quantity = len(chunked_books)
     for page_number, books_group in enumerate(chunked_books, start=1):
         render_page(book_image_folder, books, books_group, page_number, site_directory, page_quantity)
@@ -37,9 +37,9 @@ def on_reload():
 def parse_arguments():
     parser = argparse.ArgumentParser(description='''Программа генерации веб сайта с книгами''')
     parser.add_argument('-sd', '--site_directory',
-                        help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
+                        help='путь к каталогу с оффлайн версией сайта',
                         type=str,
-                        default='site')
+                        default='pages')
     parser.add_argument('-bd', '--books_directory',
                         help='путь к каталогу с результатами парсинга: картинкам, книгам, JSON',
                         type=str,
@@ -61,18 +61,18 @@ if __name__ == '__main__':
     site_directory = args.site_directory
     destination_folder = args.books_directory
 
-    book_image_folder = './images'
+    book_image_folder = 'media/images'
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
 
-    shutil.copytree('resources', f'{site_directory}/resources', dirs_exist_ok = True)
-    shutil.copytree(f'{destination_folder}/images', f'{site_directory}/images', dirs_exist_ok=True)
-    shutil.copytree(f'{destination_folder}/books', f'{site_directory}/books', dirs_exist_ok=True)
+    shutil.copytree('static', f'{site_directory}/static', dirs_exist_ok = True)
+    shutil.copytree(f'{destination_folder}/images', f'{site_directory}/media/images', dirs_exist_ok=True)
+    shutil.copytree(f'{destination_folder}/books', f'{site_directory}/media/books', dirs_exist_ok=True)
 
     on_reload()
 
     server = Server()
     server.watch('template.html', on_reload)
-    server.serve(root=f'{site_directory}')
+    server.serve(root=site_directory)
