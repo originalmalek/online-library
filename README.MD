@@ -60,7 +60,7 @@ python3 render_website.py
 
 И переходите по адресу http://127.0.0.1:5500/index1.html
 
-Готовый пример вы можете посмотреть [https://originalmalek.github.io/](https://originalmalek.github.io/online-library/site/index1.html)
+Готовый пример вы можете посмотреть [https://originalmalek.github.io/](https://originalmalek.github.io/online-library/pages/index1.html)
 
 ## Цели проекта
 
