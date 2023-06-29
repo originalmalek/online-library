@@ -5,7 +5,7 @@ import shutil
 from environs import Env
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
-from more_itertools import grouper, chunked
+from more_itertools import chunked
 
 
 def render_page(book_image_folder, books, chunked_books, page_number, site_directory, page_quantity):
