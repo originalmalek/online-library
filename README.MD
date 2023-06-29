@@ -62,6 +62,9 @@ python3 render_website.py
 
 Готовый пример вы можете посмотреть [https://originalmalek.github.io/](https://originalmalek.github.io/online-library/pages/index1.html)
 
+## Инструкция для дедушки
+Скачать папки 'pages' и 'static'. Открыть файл index1.html в папке pages.
+
 ## Цели проекта
 
 Код написан в учебных целях — для курса по Python на сайте [Devman](https://dvmn.org).
