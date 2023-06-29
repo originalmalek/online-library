@@ -67,7 +67,6 @@ if __name__ == '__main__':
         autoescape=select_autoescape(['html', 'xml'])
     )
 
-    shutil.copytree('static', f'{site_directory}/static', dirs_exist_ok = True)
     shutil.copytree(f'{destination_folder}/images', f'{site_directory}/media/images', dirs_exist_ok=True)
     shutil.copytree(f'{destination_folder}/books', f'{site_directory}/media/books', dirs_exist_ok=True)
 
